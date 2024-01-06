@@ -1,0 +1,29 @@
+const createImoveis = async (imovel, images) => {
+    const { 
+        tipo_imovel,
+        titulo,
+        preco,
+        dimensoes,
+        municipio,
+        distrito,
+        bairro,
+        quartos,
+        banheiros,
+        suites,
+        detalhes,
+        tipo_anuncio } = imovel; 
+        
+    const ArrayFotos = [];
+    
+    images.forEach(image => {
+        ArrayFotos.push(image.filename);
+    });
+
+    const fotos = ArrayFotos.join(' ');
+
+    const query = 'INSERT INTO imoveis(tipo_imovel, titulo, preco, dimensoes, municipio, distrito, bairro, fotos, quartos, banheiros, suites, detalhes, tipo_anuncio, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
+
+    const createadImoveis = await connection.execute(query, [tipo_imovel, titulo, preco, dimensoes, municipio, distrito, bairro, fotos, quartos, banheiros, suites, detalhes, tipo_anuncio, 'disponivel']);
+
+    return {insertId: createadImoveis.insertId};
+};
