@@ -1,49 +1,20 @@
 const connection = require('./connection');
 
 const getAll = async () => {
-    const [imoveis] = await connection.execute('SELECT * FROM imoveis');
+    const [imoveis] = await connection.execute(
+        'SELECT * FROM imoveis INNER JOIN apartamentos ON imoveis.id = apartamentos.id_imovel',
+    );
     
-    const fotos = [];
     
-    imoveis.find(imovel => {
-        const filename = imovel.fotos.split(' ');
-
-        if (filename.length === 2 ) {
-            fotos.push({
-                foto1: filename[0],
-                foto2: filename[1]
-            });
-        } else if (filename.length === 3 ) {
-            fotos.push({
-                foto1: filename[0],
-                foto2: filename[1],
-                foto3: filename[2]
-            });
-        } else  if (filename.length === 4) {
-            fotos.push({
-                foto1: filename[0],
-                foto2: filename[1],
-                foto3: filename[2],
-                foto4: filename[3]
-            });
-        } else  if (filename.length === 5) {
-            fotos.push({
-                foto1: filename[0],
-                foto2: filename[1],
-                foto3: filename[2],
-                foto4: filename[3],
-                foto5: filename[4],
-            });
-        }
+    const AllImoveis = imoveis.map(imovel => {
+        const filenames = imovel.fotos.split(' ');
+        const fotos = filenames.map(filename => (filename));
+        return { ...imovel, fotos };
     });
-
-    const AllImoveis = [];
-
-    for (let i = 0; i < imoveis.length; i++) {
-        AllImoveis.push({...imoveis[i], fotos: fotos[i]});
-    }
+    
 
     return AllImoveis;
+    
 };
 
 const createImoveis = async (imovel, images) => {
